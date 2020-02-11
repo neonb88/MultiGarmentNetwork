@@ -12,7 +12,14 @@ from __future__ import print_function
 
 import os
 import numpy as np
-import cPickle as pickle
+import sys
+
+# python2:
+if sys.version_info[0] == 2:
+    import cPickle as pkl          #import cPickle fine in python2; python3 lacks cPickle
+# python3:
+else:
+    import pickle as pkl
 
 import tensorflow as tf
 # tf.enable_eager_execution()
@@ -47,8 +54,15 @@ class SMPL(tf.keras.Model): #(object):
         self.scale = scale
         self.data_type = dtype
 
-        with open(pkl_path, 'r') as f:
-            dd = pickle.load(f)
+        """
+        print('='*99)
+        print("pkl_path: ")
+        print(pkl_path) # /home/nathanbendich/MultiGarmentNetwork/assets/neutral_smpl.pkl
+        print('='*99)
+        print('\n'*2)
+        """
+        with open(pkl_path, 'rb') as f:
+            dd = pkl.load(f, encoding='latin1')
         # Mean template vertices
         self.v_template = tf.Variable(
             undo_chumpy(dd['v_template']),
@@ -95,7 +109,7 @@ class SMPL(tf.keras.Model): #(object):
         self.theta_is_perfect_rotmtx = theta_is_perfect_rotmtx
 
         with open(os.path.join(os.path.dirname(__file__), '../assets/hresMapping.pkl'), 'rb') as f:
-            mapping, nf = pickle.load(f)
+            mapping, nf = pkl.load(f, encoding='latin1')
 
         self.weights_hres = tf.cast(tf.Variable(np.hstack([
                 np.expand_dims(

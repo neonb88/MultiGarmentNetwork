@@ -1,6 +1,15 @@
 import cv2
 import numpy as np
-import cPickle as pkl
+import sys
+# python2:
+if sys.version_info[0] == 2:
+  import cPickle as pkl          #import cPickle fine in python2; python3 lacks cPickle
+# python3:
+else:
+  import pickle as pkl
+#from pprint import pprint as p     # added by nxb, Feb 6, 2020
+#d=dir                              # added by nxb, Feb 6, 2020
+
 import matplotlib.pyplot as plt
 
 from config_ver1 import config, NUM, IMG_SIZE, FACE
@@ -38,7 +47,12 @@ class GarmentNet(tf.keras.Model):
         with open(
                 'assets/garment_basis_{}_temp20/{}_param_{}_corrected.pkl'.format(no_comp, garment_key, no_comp),
                 'rb') as f:
-            pca = pkl.load(f)
+            # python2:
+            if sys.version_info[0]==2:
+                pca = pkl.load(f)
+            # python3:
+            else: # sys.version_info[0]==3:
+                pca = pkl.load(f, encoding='latin1')
 
         ## Define layers
         self.d1 = Dense(512, activation='relu')
@@ -52,27 +66,27 @@ class GarmentNet(tf.keras.Model):
                            activation='tanh', name='byPass')
         self.limit_sz = Lambda(lambda z: z*0.05, name = 'limit_sz')
         # self.limit_sz = Lambda(lambda z: tf.clip_by_value(z, -0.005, 0.005), name='limit_sz')
-        self.reshape = Reshape((len(pca.mean_)/3, 3))
+        self.reshape = Reshape(( int(round(len(pca.mean_)/3)) , 3))     # I added in the characters "`int(round(...))`" b/c I'm using python3 and  nxb
 
         # self.leakyrelu = tf.keras.layers.ReLU()
 
     def call(self, inp):
-        with tf.device('/gpu:3'):
-            x_ = self.d1(inp)
-            x_ = self.d2(x_)
-            x_ = self.d3(x_)
+        #with tf.device('/gpu:3'): # this line was changed Mon Feb 10 19:08:51 EST 2020
+        x_ = self.d1(inp)
+        x_ = self.d2(x_)
+        x_ = self.d3(x_)
 
-            pca_comp = self.pca_comp(x_)
-            x = self.PCA_(pca_comp)
+        pca_comp = self.pca_comp(x_)
+        x = self.PCA_(pca_comp)
 
-            bypass = self.d4(x_)
-            bypass = self.bypass(bypass)
-            bypass = self.limit_sz(bypass)
-            bypass = self.reshape(bypass)
+        bypass = self.d4(x_)
+        bypass = self.bypass(bypass)
+        bypass = self.limit_sz(bypass)
+        bypass = self.reshape(bypass)
 
-            y = x + bypass
+        y = x + bypass
 
-            return [y, pca_comp]
+        return [y, pca_comp]
 
 
 class SingleImageNet(tf.keras.Model):
@@ -149,54 +163,54 @@ class SingleImageNet(tf.keras.Model):
 
     def call(self, inp):
         inp, J_2d = inp
-        with tf.device('/gpu:1'):
-            x = self.conv1(inp)
-            x = self.append_coord(x)
-            x = self.conv1_1(x)
-            z = MaxPool2D((2, 2))(x)
+        #with tf.device('/gpu:1'):    # this line was changed Mon Feb 10 19:08:51 EST 2020
+        x = self.conv1(inp)
+        x = self.append_coord(x)
+        x = self.conv1_1(x)
+        z = MaxPool2D((2, 2))(x)
 
-            z = self.append_coord(z)
-            x = self.conv2(z)
-            x = self.append_coord(x)
-            x = self.conv2_1(x)
-            z = MaxPool2D((2, 2))(x)
+        z = self.append_coord(z)
+        x = self.conv2(z)
+        x = self.append_coord(x)
+        x = self.conv2_1(x)
+        z = MaxPool2D((2, 2))(x)
 
-        with tf.device('/gpu:1'):
-            z = self.append_coord(z)
-            x = self.conv3(z)
-            x = self.append_coord(x)
-            x = self.conv3_1(x)
-            z = MaxPool2D((2, 2))(x)
+        #with tf.device('/gpu:1'):    # this line was changed Mon Feb 10 19:08:51 EST 2020
+        z = self.append_coord(z)
+        x = self.conv3(z)
+        x = self.append_coord(x)
+        x = self.conv3_1(x)
+        z = MaxPool2D((2, 2))(x)
 
-            z = self.append_coord(z)
-            x = self.conv5(z)
-            x = self.append_coord(x)
-            x = self.conv5_1(x)
+        z = self.append_coord(z)
+        x = self.conv5(z)
+        x = self.append_coord(x)
+        x = self.conv5_1(x)
 
-            split_shape = self.split_shape(x)
-            split_garms = self.split_garms(x)
+        split_shape = self.split_shape(x)
+        split_garms = self.split_garms(x)
 
-            split_shape = self.append_coord(split_shape)
-            split_shape = self.conv6(split_shape)
+        split_shape = self.append_coord(split_shape)
+        split_shape = self.conv6(split_shape)
 
-            split_garms = self.append_coord(split_garms)
-            split_garms = self.conv7(split_garms)
-            flat_garms = self.flatten(split_garms)
-            flat_shape = self.flatten(split_shape)
+        split_garms = self.append_coord(split_garms)
+        split_garms = self.conv7(split_garms)
+        flat_garms = self.flatten(split_garms)
+        flat_shape = self.flatten(split_shape)
 
-            flat_garms = Concatenate()([flat_garms, J_2d])
-            flat_garms = self.dg(flat_garms)
-            flat_garms = self.dg2(flat_garms)
-            flat_garms = self.dg3(flat_garms)
-            latent_code_garms = self.latent_code_garms(flat_garms)
+        flat_garms = Concatenate()([flat_garms, J_2d])
+        flat_garms = self.dg(flat_garms)
+        flat_garms = self.dg2(flat_garms)
+        flat_garms = self.dg3(flat_garms)
+        latent_code_garms = self.latent_code_garms(flat_garms)
 
-            flat_shape = Concatenate()([flat_shape, J_2d])
-            flat_shape = self.db(flat_shape)
-            flat_shape = self.db2(flat_shape)
-            flat_shape = self.db3(flat_shape)
-            latent_code_shape = self.latent_code_shape(flat_shape)
+        flat_shape = Concatenate()([flat_shape, J_2d])
+        flat_shape = self.db(flat_shape)
+        flat_shape = self.db2(flat_shape)
+        flat_shape = self.db3(flat_shape)
+        latent_code_shape = self.latent_code_shape(flat_shape)
 
-            return [latent_code_garms, latent_code_shape]
+        return [latent_code_garms, latent_code_shape]
 
 class BaseModel(tf.keras.Model):
     def __init__(self, name = None):
@@ -209,7 +223,14 @@ class BaseModel(tf.keras.Model):
             self.optimizer = tf.train.AdamOptimizer(learning_rate=self.config.train.lr)
         else:
             self.optimizer = tf.train.AdamOptimizer(0.001)
-        self.vertSpread = pkl.load(open('assets/vert_spread.pkl'))
+        #===================================================================================================
+        # python2:
+        if sys.version_info[0] == 2:
+          self.vertSpread = pkl.load(open('assets/vert_spread.pkl', 'rb'))
+        # python3:
+        else:
+          self.vertSpread = pkl.load(open('assets/vert_spread.pkl', 'rb'), encoding='bytes')
+        #===================================================================================================
         self.garmentModels = []
 
     def save(self, checkpoint_path):
@@ -245,7 +266,12 @@ class PoseShapeOffsetModel(BaseModel):
              np.array([145, 0, 65]),
              np.array([0, 145, 65])], tf.float32) / 255.
         with open('assets/hresMapping.pkl', 'rb') as f:
-            _, self.faces = pkl.load(f)
+            # python2:
+            if sys.version_info[0] == 2:
+                _, self.faces = pkl.load(f)
+            # python3:
+            else:
+                _, self.faces = pkl.load(f, encoding='latin1')
         self.faces = np.int32(self.faces)
 
         ## Define network layers
@@ -304,99 +330,101 @@ class PoseShapeOffsetModel(BaseModel):
         else:
             Js = [self.flatten(tf.cast(tf.Variable(x, trainable=False), tf.float32)) for x in Js_in]
 
-        with tf.device('/gpu:1'):
-            lat_codes = [self.top_([q, j]) for q, j in zip(images, Js)]
-            latent_code_offset = self.avg([q[0] for q in lat_codes])
-            latent_code_betas = self.avg([q[1] for q in lat_codes])
-            latent_code_pose = [tf.concat([q[1], x], axis=-1) for q, x in zip(lat_codes, Js)]
+        #with tf.device('/gpu:1'):
+        lat_codes = [self.top_([q, j]) for q, j in zip(images, Js)]
+        latent_code_offset = self.avg([q[0] for q in lat_codes])
+        latent_code_betas = self.avg([q[1] for q in lat_codes])
+        latent_code_pose = [tf.concat([q[1], x], axis=-1) for q, x in zip(lat_codes, Js)]
 
-        with tf.device('/gpu:2'):
-            latent_code_betas = self.lat_betas(latent_code_betas)
-            betas = self.betas(latent_code_betas)
+        #with tf.device('/gpu:2'):
+        latent_code_betas = self.lat_betas(latent_code_betas)
+        betas = self.betas(latent_code_betas)
 
-            latent_code_pose = [self.lat_pose(x) for x in latent_code_pose]
+        latent_code_pose = [self.lat_pose(x) for x in latent_code_pose]
 
-            pose_trans_init = tf.tile(tf.expand_dims(self.pose_trans, 0), (K.int_shape(betas)[0], 1))
+        pose_trans_init = tf.tile(tf.expand_dims(self.pose_trans, 0), (K.int_shape(betas)[0], 1))
 
-            poses_ = [self.lat_pose_layer(x) + pose_trans_init for x in latent_code_pose]
-            trans_ = [self.cut_trans(x) for x in poses_]
-            trans = [la(i) for la, i in zip(self.trans_layers, trans_)]
+        poses_ = [self.lat_pose_layer(x) + pose_trans_init for x in latent_code_pose]
+        trans_ = [self.cut_trans(x) for x in poses_]
+        trans = [la(i) for la, i in zip(self.trans_layers, trans_)]
 
-            poses_ = [self.cut_poses(x) for x in poses_]
-            poses_ = [self.reshape_pose(x) for x in poses_]
-            poses = [la(i) for la, i in zip(self.pose_layers, poses_)]
+        poses_ = [self.cut_poses(x) for x in poses_]
+        poses_ = [self.reshape_pose(x) for x in poses_]
+        poses = [la(i) for la, i in zip(self.pose_layers, poses_)]
 
-            ##
-            out_dict['betas'] = betas
-            for i in range(NUM):
-                out_dict['pose_{}'.format(i)] = poses[i]
-                out_dict['trans_{}'.format(i)] = trans[i]
+        ##
+        out_dict['betas'] = betas
+        for i in range(NUM):
+            out_dict['pose_{}'.format(i)] = poses[i]
+            out_dict['trans_{}'.format(i)] = trans[i]
 
-            latent_code_offset_ShapeMerged = self.latent_code_offset_ShapeMerged(latent_code_offset)
-            latent_code_offset_ShapeMerged = self.latent_code_offset_ShapeMerged_2(latent_code_offset_ShapeMerged)
+        latent_code_offset_ShapeMerged = self.latent_code_offset_ShapeMerged(latent_code_offset)
+        latent_code_offset_ShapeMerged = self.latent_code_offset_ShapeMerged_2(latent_code_offset_ShapeMerged)
 
-            garm_model_outputs = [fe(latent_code_offset_ShapeMerged) for fe in self.garmentModels]
-            garment_verts_all = [fe[0] for fe in garm_model_outputs]
-            garment_pca = [fe[1] for fe in garm_model_outputs]
-            garment_pca = tf.stack(garment_pca, axis=1)
+        garm_model_outputs = [fe(latent_code_offset_ShapeMerged) for fe in self.garmentModels]
+        garment_verts_all = [fe[0] for fe in garm_model_outputs]
+        garment_pca = [fe[1] for fe in garm_model_outputs]
+        garment_pca = tf.stack(garment_pca, axis=1)
 
-            ##
-            out_dict['pca_verts'] = garment_pca
+        ##
+        out_dict['pca_verts'] = garment_pca
 
-            lis = []
-            for go, vs in zip(garment_verts_all, self.scatters):
-                lis.append(vs(go))
-            garment_verts_all_scattered = tf.stack(lis, axis=-1)
+        lis = []
+        for go, vs in zip(garment_verts_all, self.scatters):
+            lis.append(vs(go))
+        garment_verts_all_scattered = tf.stack(lis, axis=-1)
 
-            ## Get naked smpl to compute garment offsets
-            zerooooooo = K.zeros_like(garment_verts_all_scattered[..., 0])
-            pooooooooo = [K.zeros_like(p) for p in poses]
-            tooooooooo = [K.zeros_like(p) for p in trans]
+        ## Get naked smpl to compute garment offsets
+        zerooooooo = K.zeros_like(garment_verts_all_scattered[..., 0])
+        pooooooooo = [K.zeros_like(p) for p in poses]
+        tooooooooo = [K.zeros_like(p) for p in trans]
 
-            smpls_base = []
-            for i, (p, t) in enumerate(zip(pooooooooo, tooooooooo)):
-                v, _, n, _ = self.smpl(p, betas, t, zerooooooo)
-                smpls_base.append(v)
-                if i == 0:
-                    vertices_naked_ = n
+        smpls_base = []
+        for i, (p, t) in enumerate(zip(pooooooooo, tooooooooo)):
+            v, _, n, _ = self.smpl(p, betas, t, zerooooooo)
+            smpls_base.append(v)
+            if i == 0:
+                vertices_naked_ = n
 
-            ## Append Skin offsets
-            garment_verts_all_scattered = tf.concat(
-                [K.expand_dims(vertices_naked_, -1), tf.cast(garment_verts_all_scattered, vertices_naked_.dtype)],
-                axis=-1)
-            garment_verts_all_scattered = tf.transpose(garment_verts_all_scattered, perm=[0, 1, 3, 2])
-            clothed_verts = tf.batch_gather(garment_verts_all_scattered, vertexlabel)
-            clothed_verts = tf.squeeze(tf.transpose(clothed_verts, perm=[0, 1, 3, 2]))
+        ## Append Skin offsets
+        garment_verts_all_scattered = tf.concat(
+            [K.expand_dims(vertices_naked_, -1), tf.cast(garment_verts_all_scattered, vertices_naked_.dtype)],
+            axis=-1)
+        garment_verts_all_scattered = tf.transpose(garment_verts_all_scattered, perm=[0, 1, 3, 2])
+        clothed_verts = tf.batch_gather(garment_verts_all_scattered, vertexlabel)
+        clothed_verts = tf.squeeze(tf.transpose(clothed_verts, perm=[0, 1, 3, 2]))
 
-            offsets_ = clothed_verts - vertices_naked_
+        offsets_ = clothed_verts - vertices_naked_
 
-            smpls = []
-            for i, (p, t) in enumerate(zip(poses, trans)):
-                v, t, n, _ = self.smpl(p, betas, t, offsets_)
-                smpls.append(v)
-                if i == 0:
-                    vertices_naked = n
-                    vertices_tposed = t
+        smpls = []
+        for i, (p, t) in enumerate(zip(poses, trans)):
+            v, t, n, _ = self.smpl(p, betas, t, offsets_)
+            smpls.append(v)
+            if i == 0:
+                vertices_naked = n
+                vertices_tposed = t
 
-            Js = [jl(self.smpl_J([p, betas, t])) for jl, p, t in zip(self.J_layers, poses, trans)]
-            vertices = tf.concat([tf.expand_dims(smpl, axis=-1) for i, smpl in enumerate(smpls)], axis=-1)
+        Js = [  jl(self.smpl_J(p, betas, t))    for jl, p, t in zip(self.J_layers, poses, trans)  ]
+        #Js = [  jl(self.smpl_J([p, betas, t]))    for jl, p, t in zip(self.J_layers, poses, trans)  ]   # original line (pre-   Mon Feb 10 20:19:03 EST 2020)
+        vertices = tf.concat([tf.expand_dims(smpl, axis=-1) for i, smpl in enumerate(smpls)], axis=-1)
 
-            ##
-            out_dict['vertices'] = vertices
-            out_dict['vertices_tposed'] = vertices_tposed
-            out_dict['vertices_naked'] = vertices_naked
+        ##
+        out_dict['vertices'] = vertices
+        out_dict['vertices_tposed'] = vertices_tposed
+        out_dict['vertices_naked'] = vertices_naked
 
-            ##
-            out_dict['vertices'] = vertices
-            out_dict['vertices_tposed'] = vertices_tposed
-            out_dict['vertices_naked'] = vertices_naked
-            out_dict['offsets_h'] = offsets_
-            for i in range(NUM):
-                out_dict['J_{}'.format(i)] = Js[i]
+        ##
+        out_dict['vertices'] = vertices
+        out_dict['vertices_tposed'] = vertices_tposed
+        out_dict['vertices_naked'] = vertices_naked
+        out_dict['offsets_h'] = offsets_
+        for i in range(NUM):
+            out_dict['J_{}'.format(i)] = Js[i]
 
-            vert_cols = tf.reshape(tf.gather(self.colormap, tf.reshape(vertexlabel, (-1,))), (-1, config.NVERTS, 3))
-            renderered_garms_all = []
+        vert_cols = tf.reshape(tf.gather(self.colormap, tf.reshape(vertexlabel, (-1,))), (-1, config.NVERTS, 3))
+        renderered_garms_all = []
 
+        # "for view in range(NUM):" was the first line outside of "with tf.device('/gpu:2'):" (nxb changed this on Mon Feb 10, 2020, at 19:08:51 EST)
         for view in range(NUM):
             renderered_garms_all.append(render_colored_batch(vertices[..., view], self.faces, vert_cols,  # [bat],
                                                              IMG_SIZE, IMG_SIZE, FOCAL_LENGTH,
@@ -455,3 +483,102 @@ class PoseShapeOffsetModel(BaseModel):
                 self.optimizer.apply_gradients(
                     zip(grad, self.trainable_variables))
         return loss
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

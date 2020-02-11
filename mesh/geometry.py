@@ -16,12 +16,13 @@ def sparse_dense_matmul_batch(a, b):
     indices = tf.reshape(a.indices, (num_b, -1, 3))
     values = tf.reshape(a.values, (num_b, -1))
 
-    def matmul((i, bb)):
+    def matmul(i): #, bb): # these edits were made on  Mon Feb 10, 2020, at 21:19:07 EST.  I'm guessing that in python3 tf.map_fn() works differently than in python2. -nxb
+        bb=i[1]
+        i=i[0]
         sp = tf.SparseTensor(indices[i, :, 1:], values[i], shape[1:])
         return i, tf.sparse_tensor_dense_matmul(sp, bb)
-
+    #_, p = tf.map_fn(matmul, tf.range(num_b), b)     # <== this line (removing the parentheses around the tuple) DIDN'T WORK. -nxb, Feb 10, 2020.
     _, p = tf.map_fn(matmul, (tf.range(num_b), b))
-
     return p
 
 
@@ -201,14 +202,14 @@ if __name__ == "__main__":
         tf_L_e = tf.sparse_tensor_to_dense(tf_L).eval()
         tf_lap_e = tf_lap.eval()
 
-    print np.max(np.abs(tf_L_e[0] - L0.toarray()))
-    print np.max(np.abs(tf_L_e[-1] - L0.toarray()))
-    print tf_L_e.shape
+    print(np.max(np.abs(tf_L_e[0] - L0.toarray())))
+    print(np.max(np.abs(tf_L_e[-1] - L0.toarray())))
+    print(tf_L_e.shape)
     # print np.max(np.abs(tf_L0_e[0] - L0.toarray()))
 
-    print np.max(np.abs(tf_lap_e[0] - lap0))
-    print np.max(np.abs(tf_lap_e[-1] - lap0))
-    print np.max(np.abs(tf_lap_e[0] - tf_lap_e[-1]))
+    print(np.max(np.abs(tf_lap_e[0] - lap0)))
+    print(np.max(np.abs(tf_lap_e[-1] - lap0)))
+    print(np.max(np.abs(tf_lap_e[0] - tf_lap_e[-1])))
 
     # from opendr.topology import get_vertices_per_edge
     # e_idx = get_vertices_per_edge(m.v, m.f)

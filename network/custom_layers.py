@@ -30,7 +30,11 @@ class PCA_(Layer):
         super(PCA_, self).build(input_shape)  # Be sure to call this at the end
 
     def call(self, x):
-        return tf.reshape(tf.matmul(x, self.components) + self.mean, (-1, K.int_shape(self.mean)[0] / 3, 3))
+         # all lines like "tf.cast(..., float32)" added by nxb, Mon Feb 10 19:17:59 EST 2020
+        out = tf.matmul(x, self.components) + self.mean
+        newshape=(-1, int(round(K.int_shape(self.mean)[0] / 3)), 3) # added "`int(round(...))`" b/c we're now using python3  instead of python2, and in python3, `type(3/2)==type(1)` (int) whereas in python2, `type(3/2)==type(1.5)` (float)
+        return tf.reshape(out, newshape) 
+        #return tf.reshape(tf.matmul(x, self.components) + self.mean, (-1, K.int_shape(self.mean)[0] / 3, 3))  # the original line.
 
     def compute_output_shape(self, input_shape):
         return (input_shape[0], self.output_dim[0], self.output_dim[1])

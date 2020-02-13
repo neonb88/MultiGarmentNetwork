@@ -20,7 +20,7 @@ Link to paper: https://arxiv.org/abs/1908.06903
 7.  ~/w8_4_img_upload_____then_check_resolution__.py            (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/w8_4_img_upload_____then_check_resolution__.py)
 8.  ~/w8_4_img_upload_____then_run_PGN__.py                     (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/w8_4_img_upload_____then_run_PGN__.py)
 ##### 2-D Pose estimation (OpenPose) (in parallel with the clothing segmentation, not dependent on it)
-## TODO: write code to copy all the images to the OpenPose docker container and have openpose run only when the last image is "`docker cp`"ed
+##### TODO: write code to copy all the images to the OpenPose docker container and have openpose run only when the last image is "`docker cp`"ed
 9.  /openpose/w8_4_img_upload_____then_run_OPose__known_fname.py (/root/x/p/vr_mall____fresh___Dec_12_2018/smplx/OpenPose_____interaction/w8_4_img_upload_____then_run_OPose__known_fname.py)     (on OpenPose docker container)
 10.
 11.

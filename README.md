@@ -1,7 +1,37 @@
 # MultiGarmentNetwork
+Nathan X. Bendich's (neonb88@github.com, nxb) edits to Bharat L. Bhatnagar's
 Repo for **"Multi-Garment Net: Learning to Dress 3D People from Images, ICCV'19"**
+because I only want to pay for 1 Tesla K80 GPU on GCloud Compute Engine.
 
 Link to paper: https://arxiv.org/abs/1908.06903
+
+## Quickstart (as of February 13, 2020, at 14:47:47 EST) -nxb
+
+###### Upload customer video:
+1.  ~/UI_launch.sh                          (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/UIUX_FrontEnd_nodejs_____interaction/launch.sh)
+2.  ~/cut_up_sync.py                        (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/sync_gsutil_vid_bucket_____1_hr.py)
+###### Make 8 frames from video:
+3.  ~/w8_4_vid_upload_____then_cut_vid__.py (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/w8_4_vid_upload_____then_cut_vid__.py)
+###### Rotate each of the 8 images s.t. they're "face up" (OpenPose)
+4.  /openpose/w8_4_orientation_img_upload_____then_run_OPose__.py (/root/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/w8_4_orientation_img_upload_____then_run_OPose__.py)                                             (in OpenPose docker container)
+5.  ~/sync_gsutil_angle_bucket_____1_hr.py   /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/sync_gsutil_angle_bucket_____1_hr.py      (back on VM "mgn-3")
+6.  ~/w8_4_angle_upload_then_rotate_all_frames_.py (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/w8_4_angle_upload_then_rotate_all_frames_.py).
+###### Decrease resolution b/c CIHP_PGN and segment (each piece of clothing):
+7.  ~/w8_4_img_upload_____then_check_resolution__.py            (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/w8_4_img_upload_____then_check_resolution__.py)
+8.  ~/w8_4_img_upload_____then_run_PGN__.py                     (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/w8_4_img_upload_____then_run_PGN__.py)
+##### 2-D Pose estimation (OpenPose) (in parallel with the clothing segmentation, not dependent on it)
+## TODO: write code to copy all the images to the OpenPose docker container and have openpose run only when the last image is "`docker cp`"ed
+9.  /openpose/w8_4_img_upload_____then_run_OPose__known_fname.py (/root/x/p/vr_mall____fresh___Dec_12_2018/smplx/OpenPose_____interaction/w8_4_img_upload_____then_run_OPose__known_fname.py)     (on OpenPose docker container)
+10.
+11.
+12.
+13.
+14.
+15.
+16.
+17.
+18.
+
 
 ## Dress SMPL body model with our Digital Wardrobe
 

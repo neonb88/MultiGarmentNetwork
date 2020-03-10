@@ -16,16 +16,16 @@ Link to paper: https://arxiv.org/abs/1908.06903
 4.  /openpose/w8_4_orientation_img_upload_____then_run_OPose__.py (/root/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/w8_4_orientation_img_upload_____then_run_OPose__.py)                                             (in OpenPose docker container)
 5.  ~/sync_gsutil_angle_bucket_____1_hr.py   /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/sync_gsutil_angle_bucket_____1_hr.py      (back on VM "mgn-3")
 6.  ~/w8_4_angle_upload_then_rotate_all_frames_.py (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/w8_4_angle_upload_then_rotate_all_frames_.py).
-###### Decrease resolution b/c CIHP_PGN and segment (each piece of clothing):
+###### Segment  (1st decrease resolution b/c CIHP_PGN won't run on a Tesla K80 GPU at smartphone resolution)  (segments each piece of clothing independently):
 7.  ~/w8_4_img_upload_____then_check_resolution__.py            (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/w8_4_img_upload_____then_check_resolution__.py)
 8.  ~/w8_4_img_upload_____then_run_PGN__.py                     (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/w8_4_img_upload_____then_run_PGN__.py)
 ##### 2-D Pose estimation (OpenPose) (in parallel with the clothing segmentation, not dependent on it)
 ##### TODO: write code to copy all the images to the OpenPose docker container and have openpose run only when the last image is "`docker cp`"ed
 9.  /openpose/w8_4_img_upload_____then_run_OPose__known_fname.py (/root/x/p/vr_mall____fresh___Dec_12_2018/smplx/OpenPose_____interaction/w8_4_img_upload_____then_run_OPose__known_fname.py)     (on OpenPose docker container)
-10.
-11.
-12.
-13.
+10. /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/MGN_____interaction/sync_gsutil_json_bucket_____1_hr.py
+11. /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/MGN_____interaction/prep_MGN_inputs___OpenPose_and___PGN_seg.py
+12. /home/nathanbendich/MultiGarmentNetwork/transl8d_py3/test_network.py
+13. /home/nathanbendich/MultiGarmentNetwork/transl8d_py3/dress_SMPL.py    (TODO: modify)
 14.
 15.
 16.

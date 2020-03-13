@@ -143,7 +143,9 @@ class SMPL(tf.keras.Model): #(object):
         Returns:
           - joints: N x 19 or 14 x 3 joint locations depending on joint_type
         If get_skin is True, also returns
-          - Verts: N x 6980 x 3 (low res) N x 27554 x 3 (hres)
+          - Verts: N x 6980   x 3 (low res)
+                    OR
+                   N x 27554  x 3 (hres)
         """
 
         ## Cast inputs to float64

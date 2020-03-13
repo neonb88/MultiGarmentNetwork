@@ -11,6 +11,17 @@ import tensorflow as tf
 import numpy as np
 import sys
 import datetime
+import shutil
+import os
+
+#from cx import backup, clear_dir, 
+
+# TODO:
+# loop_cond=test_data.pkl_file_not_present
+# while(loop_cond):
+#   loop_cond=os.path.exists(test_data.pkl_file)
+
+# main()
 
 #============================================= FIXME: remove ==========================================
 if not sys.version_info[0] == 3:
@@ -104,7 +115,7 @@ def load_model(model_dir):
     }
     latest_cpkt = tf.train.latest_checkpoint(model_dir)
     if latest_cpkt:
-        print('Using latest checkpoint at ' + latest_cpkt)
+        print(('Using latest checkpoint at ' + latest_cpkt))
     else:
         print('No pre-trained model found')
     checkpoint = tf.train.Checkpoint(**model_objects)
@@ -147,7 +158,7 @@ def fine_tune(m, inp, out, display = False):
                 continue
             stri = stri + k + ' :{}, '.format(lo[k])
         stri = stri + 'J_2d' + ' :{}'.format(J_2d / NUM)
-        print('Ep: {}, {}'.format(ep, stri))
+        print(('Ep: {}, {}'.format(ep, stri)))
 
     vars.extend(['pca_comp', 'betas', 'latent_code_offset_ShapeMerged', 'byPass'])
     losses_2d['laplacian'] = 5* 10 ** 5.
@@ -171,7 +182,7 @@ def fine_tune(m, inp, out, display = False):
                 continue
             stri = stri + k + ' :{}, '.format(lo[k])
         stri = stri + 'J_2d' + ' :{}'.format(J_2d/NUM)
-        print('Ep: {}, {}'.format(ep, stri))
+        print(('Ep: {}, {}'.format(ep, stri)))
 
     return m
 
@@ -215,23 +226,53 @@ if __name__ == "__main__":
 
     ## Get results before optimization
     pred = get_results(m, dat)
+    print(pred['garment_meshes'][0].v.shape)
+    print(pred['body'].v.shape)
     mv = MeshViewers((1,2), keepalive=True)
     print(type (   (pred['garment_meshes'] + [pred['body']])[0] ))
     print(type (pred['garment_meshes'] + [pred['body']]))
+    print(len  (pred['garment_meshes'] + [pred['body']]))
     print('\n'*9)
     mv[0][0].set_static_meshes(pred['garment_meshes'] + [pred['body']])
     mv[0][1].set_static_meshes([pred['body']])
 
   #============================================================================================================
     #   Temporary mesh-saving:   nxb, Mon Feb 24 20:08:17 EST 2020
-    SMPL_body_pickle  = {'body' : pred['body']}
-    timestamp   = datetime.datetime.now().strftime('__%Y_%m_%d____%H:%M_%p__')
+    timestamp   = datetime.datetime.now().strftime('__%Y_%B_%d____%H:%M_%p__')
+    """
+    SMPL_body_dict  = {'body' : pred['body']}
     with open('./assets/SMPL_pred_b4_fine_tuning_{}.pkl'.format(timestamp), 'wb') as f:
-      pkl.dump(SMPL_body_pickle, f, protocol=pkl.HIGHEST_PROTOCOL)
+      pkl.dump(SMPL_body_dict, f, protocol=pkl.HIGHEST_PROTOCOL)
       # only "unpickleable" by python3;   python2 cPickle maxes out at protocol==2,
       # but python3 allows up to protocol==4.  -nxb, Mon Feb 24 20:16:00 EST 2020
-    # obj directly:
-    pred['body'].write_obj('./assets/cust_body_SMPL_b4_fine_tuning_{}.obj'.format(timestamp) )
+    """
+
+    if 1 < len(sys.argv) and 'clothes'==sys.argv[1].lower(): # this conditional-checking style is recommended by Spolsky and others (1==x with the var name on the right instead of left b/c left gets mistaken for assignment)
+      # TODO :   check/test the shit out of this.  I didn't even run it to 
+      # TODO :   timestamped subdirectory within assets
+      pred['garment_meshes'].write_obj('./assets/clothes_mesh_from_test_network_b4_fine_tuning_{}.obj'.format(timestamp) )
+      # HOW TO: 
+      """
+      clothes_dict = {'garment_meshes' : pred['garment_meshes']}
+      with open('./assets/garments_b4_fine_tuning_{}.pkl'.format(timestamp), 'wb') as f:
+        pkl.dump(clothes_dict, f, protocol=pkl.HIGHEST_PROTOCOL)
+      """
+    else:
+      # TODO:  repose / color before saving
+      # TODO:  test
+
+      obj_path='./assets/cust.obj'
+      pred['body'].write_obj(obj_path) # NOTE: overwrites old cust.obj
+      # backup w/ timestamp
+      dated_obj_dir='/home/nathanbendich/MultiGarmentNetwork/assets/MGN_obj{}/'.format(timestamp)
+      os.makedirs(dated_obj_dir)
+      shutil.copy2(obj_path, dated_obj_dir + 'cust.obj')
+
+    """
+    clothes_dict = {'garment_meshes' : pred['garment_meshes']}
+    with open('./assets/garments_b4_fine_tuning_{}.pkl'.format(timestamp), 'wb') as f:
+      pkl.dump(clothes_dict, f, protocol=pkl.HIGHEST_PROTOCOL)
+    """
   #============================================================================================================
 
     ## Optimize the network
@@ -241,7 +282,6 @@ if __name__ == "__main__":
   #============================================================================================================
     #   Temporary mesh-saving:   nxb, Mon Feb 24 20:08:17 EST 2020
     SMPL_body_pickle  = {'body' : pred['body']}
-    timestamp   = datetime.datetime.now().strftime('__%Y_%m_%d____%H:%M_%p__')
     with open('./assets/SMPL_pred_{}.pkl'.format(timestamp), 'wb') as f:
       pkl.dump(SMPL_body_pickle, f, protocol=pkl.HIGHEST_PROTOCOL)
       # only "unpickleable" by python3;   python2 cPickle maxes out at protocol==2,
@@ -254,13 +294,3 @@ if __name__ == "__main__":
     mv1[0][1].set_static_meshes([pred['body']])
 
     print('Done')
-    # TODO: `rm` old test_data.pkl
-    # TODO: `rm` old test_data.pkl
-    # TODO: `rm` old test_data.pkl
-    # TODO: `rm` old test_data.pkl
-    # TODO: `rm` old test_data.pkl
-    # TODO: `rm` old test_data.pkl
-    # TODO: `rm` old test_data.pkl
-    # TODO: `rm` old test_data.pkl
-    # TODO: `rm` old test_data.pkl
-    # TODO: `rm` old test_data.pkl

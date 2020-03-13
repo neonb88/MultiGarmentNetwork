@@ -322,7 +322,16 @@ class PoseShapeOffsetModel(BaseModel):
     def call(self, inp):
         images, vertexlabel, Js_in = inp
         out_dict = {}
-        images = [tf.Variable(x, dtype=tf.float32, trainable=False) for x in images]
+        """
+        print('\n'*2 + '='*99)
+        print(len(images))    # 8
+        print(images[0].shape)# (2, 480, 270, 3)
+        print('='*99 + '\n'*2  )
+        #raise Exception("nxb stopped execution here.")
+        """
+        # NoTE:    this is the last place I was trying to understand why img1[0] and img1[1] aren't images of the same person from the same view.  -nxb
+        # NOTE:  BLB told us that test_network.py runs on 2 people simultaenously
+        images = [tf.Variable(x, dtype=tf.float32, trainable=False) for x in images] # list of 2 images (as tf.Variable()s)
         vertexlabel = tf.cast(tf.Variable(vertexlabel, trainable=False), tf.int32)
         if FACE:
             Js = [Lambda(lambda j: j[:, :25])(J) for J in Js_in]

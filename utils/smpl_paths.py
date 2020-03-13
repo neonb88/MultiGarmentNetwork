@@ -8,8 +8,8 @@ from utils.geometry import get_hres
 import scipy.sparse as sp
 
 ## Set your paths here
-SMPL_PATH = '/BS/RVH/work/data/smpl_models/neutral/basicModel_neutral_lbs_10_207_0_v1.0.0.pkl'
-smpl_vt_ft_path = '/BS/bharat/work/MGN_final_release/assets/smpl_vt_ft.pkl'
+SMPL_PATH = '/home/nathanbendich/MultiGarmentNetwork/assets/neutral_smpl.pkl'
+smpl_vt_ft_path = '/home/nathanbendich/MultiGarmentNetwork/assets/smpl_vt_ft.pkl'
 
 class SmplPaths:
     def __init__(self, project_dir='', exp_name='', gender='neutral', garment=''):

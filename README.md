@@ -15,9 +15,11 @@ Link to paper: https://arxiv.org/abs/1908.06903
 ###### Rotate each of the 8 images s.t. they're "face up" (OpenPose)
 4.  /openpose/w8_4_orientation_img_upload_____then_run_OPose__.py (/root/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/w8_4_orientation_img_upload_____then_run_OPose__.py)                                             (in OpenPose docker container)
 5.  ~/sync_gsutil_angle_bucket_____1_hr.py   /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/sync_gsutil_angle_bucket_____1_hr.py      (back on VM "mgn-3")
-5a.  ~/sync_gsutil_openpose_4_cropping_bucket_____1_hr.py   /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/sync_gsutil_angle_bucket_____1_hr.py      (back on VM "mgn-3")  *_TODO TODO : implement this_*
+5a.  ~/sync_gsutil_openpose_4_cropping_bucket_____1_hr.py   /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/sync_gsutil_angle_bucket_____1_hr.py      (back on VM "mgn-3")
 6.  ~/w8_4_angle_upload_then_rotate_all_frames_.py (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/w8_4_angle_upload_then_rotate_all_frames_.py).
-6a.  ~/w8_4_angle_upload_then_crop.py (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/w8_4_angle_upload_then_crop.py).
+
+step 6 includes cropping.
+
 ###### Segment  (1st decrease resolution b/c CIHP_PGN won't run on a Tesla K80 GPU at smartphone resolution)  (segments each piece of clothing independently):
 7.  ~/w8_4_img_upload_____then_check_resolution__.py            (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/w8_4_img_upload_____then_check_resolution__.py)
 8.  ~/w8_4_img_upload_____then_run_PGN__.py                     (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/w8_4_img_upload_____then_run_PGN__.py)

@@ -22,15 +22,18 @@ step 6 includes cropping.
 
 ###### Segment  (1st decrease resolution b/c CIHP_PGN won't run on a Tesla K80 GPU at smartphone resolution)  (segments each piece of clothing independently):
 7.  ~/w8_4_img_upload_____then_check_resolution__.py            (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/w8_4_img_upload_____then_check_resolution__.py)
-8.  ~/w8_4_img_upload_____then_run_PGN__.py                     (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/w8_4_img_upload_____then_run_PGN__.py)
+8.  ~/CIHP_PGN/w8_4_img_upload_____then_run_PGN__.py                     (/home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/w8_4_img_upload_____then_run_PGN__.py)
 ##### 2-D Pose estimation (OpenPose) (in parallel with the clothing segmentation, not dependent on it)
 ##### TODO: write code to copy all the images to the OpenPose docker container and have openpose run only when the last image is "`docker cp`"ed
 9.  /openpose/w8_4_img_upload_____then_run_OPose__known_fname.py (/root/x/p/vr_mall____fresh___Dec_12_2018/smplx/OpenPose_____interaction/w8_4_img_upload_____then_run_OPose__known_fname.py)     (on OpenPose docker container)
 10. /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/MGN_____interaction/sync_gsutil_json_bucket_____1_hr.py
 11. /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/MGN_____interaction/prep_MGN_inputs___OpenPose_and___PGN_seg.py
-12. /home/nathanbendich/MultiGarmentNetwork/transl8d_py3/test_network.py
-13. /home/nathanbendich/MultiGarmentNetwork/transl8d_py3/dress_SMPL.py    (TODO: modify)
-14.
+
+I think we'll have to write in a bit of code to make "prep_MGN...py" wait for sync_gsutil_openpose_json.py. 
+
+12. /home/nathanbendich/MultiGarmentNetwork/transl8d_py3/make_SMPL_mesh.py   TODO: put in polling for the most recent test_data.pkl .
+13. ...    (TODO: modify.  NOTE: this should be taken care of by the Hilaga et al. Reeb_graph code / whatever Di finds works well)
+14. ~/[...]/[...]/render_png.py (TODO)
 15.
 16.
 17.
@@ -108,3 +111,102 @@ The above copyright notice and this permission notice shall be included in all c
 
 Chaitanya Patel: code for interpenetration removal, Thiemo Alldieck: code for texture/segmentation
 stitching and Verica Lazova: code for data anonymization.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

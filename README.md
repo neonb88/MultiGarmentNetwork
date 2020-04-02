@@ -8,45 +8,46 @@ Link to paper: https://arxiv.org/abs/1908.06903
 ## Quickstart (as of February 13, 2020, at 14:47:47 EST) -nxb
 
 ###### Start 
--4.  start the instance (`gcloud compute instances start mgn-3` or in the GCloud Compute UI)
+0.  start the instance (`gcloud compute instances start mgn-3` or in the GCloud Compute UI)
 #### NOTE: in each step after this point, when I say "do xyz in shell n," I mean "Open a new cloud shell in a new tab from the GCloud menu and then do xyz."  (and by "open a new cloud shell," I mean "copy and paste a url similar to `https://ssh.cloud.google.com/projects/helpful-valve-195602/zones/us-east1-c/instances/mgn-3?authuser=0&hl=en_US&projectNumber=962799681872` into a new browser tab")
 ###### Start Docker container in shell 1 (AKA OpenPose shell)
--3. `sudo docker start 77f72f9855ad`
+1. `sudo docker start 77f72f9855ad`
 
 ###### Upload customer video:
-0.  Open shell 2 and `cd /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/UIUX_FrontEnd_nodejs_____interaction/ && ~/UI_launch.sh`
+2.  Open shell 2 and `cd /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/UIUX_FrontEnd_nodejs_____interaction/ && ~/UI_launch.sh`
 ###### Make 8 frames from video:
-1.  Open shell 3 and `conda activate mgn1 && python2 ~/w8_4_vid_upload_____then_cut_vid__.py`
-2.  Open shell 4 and `conda activate mgn1 && python2 ~/cut_up_sync.py`
+3.  Open shell 3 and `conda activate mgn1 && python2 ~/w8_4_vid_upload_____then_cut_vid__.py`
+4.  Open shell 4 and `conda activate mgn1 && python2 ~/cut_up_sync.py`
 ###### Rotate each of the 8 images s.t. they're "face up" (OpenPose)
-3.  Go to shell 1 and run `sudo docker attach 77f72f9855ad`, then once that loads, `conda activate utils1 && cd /openpose/ && python3 w8_4_orientation_img_upload_____then_run_OPose__.py`
-4.  Open shell 5 and run `conda activate mgn1 && cd /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/ && python2 w8_4_angle_upload_then_rotate_all_frames_.py`
-5.  Open shell 6 and run `conda activate mgn1 && python2 ~/sync_gsutil_angle_bucket_____1_hr.py`
-6.  Open shell 7 and run `conda activate mgn1 && python2 /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/sync_gsutil_openpose_4_cropping_bucket_____1_hr.py`
-
+5.  Go to shell 1 and run `sudo docker attach 77f72f9855ad`, then once that loads, `conda activate utils1 && cd /openpose/ && python3 w8_4_orientation_img_upload_____then_run_OPose__.py`
+6.  Open shell 5 and run `conda activate mgn1 && cd /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/ && python2 w8_4_angle_upload_then_rotate_all_frames_.py`
 
 step 6 includes cropping.
 
+7.  Open shell 6 and run `conda activate mgn1 && python2 ~/sync_gsutil_angle_bucket_____1_hr.py`
+8.  Open shell 7 and run `conda activate mgn1 && python2 /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/sync_gsutil_openpose_4_cropping_bucket_____1_hr.py`
+
 ###### Segment  (segments each piece of clothing independently):
-7.  Open shell 8 and run `conda activate mgn1 && cd /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/ && python2 ~/w8_4_img_upload_____then_check_resolution__.py`
+9.  Open shell 8 and run `conda activate mgn1 && cd /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/ && python2 ~/w8_4_img_upload_____then_check_resolution__.py`
   (1st decrease resolution b/c CIHP-PGN won't run on a Tesla K80 GPU at smartphone resolution)
-8.  Open shell 9 and run `conda activate mgn1 && cd /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/ && python2 w8_4_img_upload_____then_run_PGN__.py`
+10.  Open shell 9 and run `conda activate mgn1 && cd /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/ && python2 w8_4_img_upload_____then_run_PGN__.py`
 ##### 2-D Pose estimation (OpenPose) (in parallel with the clothing segmentation, not dependent on it)
 ##### TODO: write code to copy all the images to the OpenPose docker container and have openpose run only when the last image is "`docker cp`"ed
-9.  Go back to shell 1 and `cd /openpose && python3 w8_4_img_upload_____then_run_OPose__known_fname.py`
+11.  Go back to shell 1 and `cd /openpose && python3 w8_4_img_upload_____then_run_OPose__known_fname.py`
 (/root/x/p/vr_mall____fresh___Dec_12_2018/smplx/OpenPose_____interaction/w8_4_img_upload_____then_run_OPose__known_fname.py)
-10. Open shell 10 and run `conda activate mgn1 && cd /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/MGN_____interaction/ && python2 prep_MGN_inputs___OpenPose_and___PGN_seg.py
-11. Open shell 11 and run `conda activate mgn1 && python2 /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/MGN_____interaction/sync_gsutil_json_bucket_____1_hr.py`
+12. Open shell 10 and run `conda activate mgn1 && cd /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/MGN_____interaction/ && python2 prep_MGN_inputs___OpenPose_and___PGN_seg.py
+13. Open shell 11 and run `conda activate mgn1 && python2 /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/MGN_____interaction/sync_gsutil_json_bucket_____1_hr.py`
 
 I think we'll have to write in a bit of code to make "prep_MGN...py" wait for sync_gsutil_openpose_json.py. 
 
-12. Open shell 12 and run `conda activate mgn_py37 && cd /home/nathanbendich/MultiGarmentNetwork/transl8d_py3/ && python3 make_SMPL_mesh.py`
-13. [.../di's_part/...]   (TODO: modify.  NOTE: this should be taken care of by the Hilaga et al. Reeb_graph code / whatever Di finds works well)
-14. ~/[...]/[...]/render_png.py (TODO)
-15.
-16.
-17.
+14. Open shell 12 and run `conda activate mgn_py37 && cd /home/nathanbendich/MultiGarmentNetwork/transl8d_py3/ && python3 make_SMPL_mesh.py`
+15. [.../di's_part/...]   (TODO: modify.  NOTE: this should be taken care of by the Hilaga et al. Reeb_graph code / whatever Di finds works well)
+16. ~/[...]/[...]/render_png.py (TODO)
+17. TURN OFF THE VM: `gcloud compute instances stop mgn-3`.  Otherwise, Nathan will be billed.
 18.
+19.
+20.
+
 
 
 ## Dress SMPL body model with our Digital Wardrobe

@@ -28,7 +28,7 @@ step 6 includes cropping.
 8.  Open shell 7 and run `conda activate mgn1 && python2 /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/sync_gsutil_openpose_4_cropping_bucket_____1_hr.py`
 
 ###### Segment  (segments each piece of clothing independently):
-9.  Open shell 8 and run `conda activate mgn1 && cd /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/ && python2 ~/w8_4_img_upload_____then_check_resolution__.py`
+9.  Open shell 8 and run `conda activate mgn1 && cd /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/ && python2 w8_4_img_upload_____then_check_resolution__.py`
   (1st decrease resolution b/c CIHP-PGN won't run on a Tesla K80 GPU at smartphone resolution)
 10.  Open shell 9 and run `conda activate mgn1 && cd /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/ && python2 w8_4_img_upload_____then_run_PGN__.py`
 ##### 2-D Pose estimation (OpenPose) (in parallel with the clothing segmentation, not dependent on it)
@@ -49,6 +49,43 @@ I think we'll have to write in a bit of code to make "prep_MGN...py" wait for sy
 20.
 
 
+## File locs:
+
+If I've listed a directory, please empty it completely.  Otherwise, only delete the file I listed: please delete none of the others in that directory.  
+
+VM "mgn-3" :
+1.  /home/nathanbendich/CIHP_PGN/datasets/CIHP/last_custs_angle.txt
+2.  /home/nathanbendich/CIHP_PGN/datasets/CIHP/videos/
+3.  /home/nathanbendich/intermediate_steps_ClothX/images/
+4.  /home/nathanbendich/intermediate_steps_ClothX/edges/
+5.  /home/nathanbendich/intermediate_steps_ClothX/labels/
+6.  /home/nathanbendich/CIHP_PGN/datasets/CIHP/high_res.py    (the contents of this file "high_res.py" should be "var_name=True")
+7.  /home/nathanbendich/intermediate_steps_ClothX/OpenPose_json_4_cropping/
+8.  /home/nathanbendich/CIHP_PGN/datasets/CIHP/images/
+9.  /home/nathanbendich/CIHP_PGN/datasets/CIHP/labels/
+10.  /home/nathanbendich/CIHP_PGN/datasets/CIHP/edges/
+11.  /home/nathanbendich/CIHP_PGN/output/cihp_parsing_maps/
+12.  /home/nathanbendich/CIHP_PGN/output/cihp_edge_maps/
+13.  /home/nathanbendich/intermediate_steps_ClothX/OpenPose_json/
+14.  /home/nathanbendich/MultiGarmentNetwork/assets/test_data.pkl
+15.  /home/nathanbendich/intermediate_steps_ClothX/cihp_parsing_maps/
+16.  /home/nathanbendich/MultiGarmentNetwork/assets/cust.obj
+17.
+18.
+
+
+OpenPose Docker container:
+1.  /root/orientation_imgs/
+2.  /root/cust_imgs
+3.  /openpose/angles/last_custs_angle.txt
+4.  /openpose/output/keypoints_json/
+5.  
+
+GCloud storage buckets:
+1. gs://cust_vids/
+2. gs://openpose_json2/
+3. gs://openpose_json_4_cropping/
+4. gs://vid_angles/
 
 ## Dress SMPL body model with our Digital Wardrobe
 

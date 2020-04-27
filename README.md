@@ -30,7 +30,7 @@ step 6 includes cropping.
 ###### Segment  (segments each piece of clothing independently):
 9.  Open shell 8 and run `2 && c /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/ && p2 w8_4_img_upload_____then_check_resolution__.py`
   (1st decrease resolution b/c CIHP-PGN won't run on a Tesla K80 GPU at smartphone resolution)
-10.  Open shell 9 and run `2 && c /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/ && p2 w8_4_img_upload_____then_run_PGN__.py`
+10.  Open shell 9 and run `2 && c /home/nathanbendich/CIHP_PGN && p2 w8_4_img_upload_____then_run_PGN__.py`
 ##### 2-D Pose estimation (OpenPose) (in parallel with the clothing segmentation, not dependent on it)
 ##### TODO: write code to copy all the images to the OpenPose docker container and have openpose run only when the last image is "`docker cp`"ed
 11.  Go back to shell 1 and `c /openpose && python3 w8_4_img_upload_____then_run_OPose__known_fname.py`

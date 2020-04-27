@@ -19,7 +19,7 @@ Link to paper: https://arxiv.org/abs/1908.06903
 3.  Open shell 3 and `conda activate mgn1 && python2 ~/w8_4_vid_upload_____then_cut_vid__.py`
 4.  Open shell 4 and `2 && p2 ~/cut_up_sync.py`
 ###### Rotate each of the 8 images s.t. they're "face up" (OpenPose)
-5.  Go to shell 1 and run `a`, then once that loads, `3 && c /openpose/ && p3 w8_4_orientation_img_upload_____then_run_OPose__.py`
+5.  Go to shell 1 and run `a`, then once that loads, `3 && p3 w8_4_orientation_img_upload_____then_run_OPose__.py`
 6.  Open shell 5 and run `2 && c /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/ && p2 w8_4_angle_upload_then_rotate_all_frames_.py`
 
 step 6 includes cropping.
@@ -59,7 +59,7 @@ VM "mgn-3" :
 3.  /home/nathanbendich/intermediate_steps_ClothX/images/
 4.  /home/nathanbendich/intermediate_steps_ClothX/edges/
 5.  /home/nathanbendich/intermediate_steps_ClothX/labels/
-6.  /home/nathanbendich/CIHP_PGN/datasets/CIHP/high_res.py    (the contents of this file "high_res.py" should be "var_name=True")
+6.  /home/nathanbendich/CIHP_PGN/datasets/CIHP/high_res.py    (the contents of this file "high_res.py" should be "high_res=True")
 7.  /home/nathanbendich/intermediate_steps_ClothX/OpenPose_json_4_cropping/
 8.  /home/nathanbendich/CIHP_PGN/datasets/CIHP/images/
 9.  /home/nathanbendich/CIHP_PGN/datasets/CIHP/labels/

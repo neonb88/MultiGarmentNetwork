@@ -11,7 +11,7 @@ Link to paper: https://arxiv.org/abs/1908.06903
 0.  start the instance (`gcloud compute instances start mgn-3` or in the GCloud Compute UI)
 #### NOTE: in each step after this point, when I say "do xyz in shell n," I mean "Open a new cloud shell in a new tab from the GCloud menu and then do xyz."  (and by "open a new cloud shell," I mean "copy and paste a url similar to `https://ssh.cloud.google.com/projects/helpful-valve-195602/zones/us-east1-c/instances/mgn-3?authuser=0&hl=en_US&projectNumber=962799681872` into a new browser tab")
 ###### Start Docker containers in shell 1
-1.
+1.  Clean out files from the previous customer's video and start dockers:
 ```
 ./clean.sh &&\
 s &&\
@@ -19,44 +19,112 @@ sudo docker start 5b1c347bf448
 ``` 
 
 ###### Upload customer video:
-2.  Open shell 2 and `cd /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/UIUX_FrontEnd_nodejs_____interaction/ && ./launch.sh`
+2.  Open shell 2 and 
+```
+cd x/p/vr_mall____fresh___Dec_12_2018/smplx/UIUX_FrontEnd_nodejs_____interaction/ &&\
+./launch.sh
+```
 ###### Make 8 frames from video:
-3.  Open shell 3 and `conda activate mgn1 && python2 ~/w8_4_vid_upload_____then_cut_vid__.py`
-4.  Open shell 4 and `2 && p2 ~/cut_up_sync.py`
+3.  Open shell 3 and 
+```
+2 &&\
+p2 w8_4_vid_upload_____then_cut_vid__.py
+```
+4.  Open shell 4 and
+```
+2 &&\
+p2 cut_up_sync.py
+```
 ###### Rotate each of the 8 images s.t. they're "face up" (OpenPose)
-5.  Go to shell 1 and run `a`, then once that loads, `3 && p3 w8_4_orientation_img_upload_____then_run_OPose__.py`
-6.  Open shell 5 and run `2 && c /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/ && p2 w8_4_angle_upload_then_rotate_all_frames_.py`
-
+5.  Go to shell 1 and run 
+```
+a
+```
+then, once that loads,
+```
+3 &&\
+p3 w8_4_orientation_img_upload_____then_run_OPose__.py
+```
+6.  Open shell 5 and run 
+```
+2 &&\
+c x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/ &&\
+p2 w8_4_angle_upload_then_rotate_all_frames_.py       # includes cropping.  should rename
+```
 step 6 includes cropping.
 
-7.  Open shell 6 and run `2 && p2 ~/sync_gsutil_angle_bucket_____1_hr.py`
-8.  Open shell 7 and run `2 && p2 /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/sync_gsutil_openpose_4_cropping_bucket_____1_hr.py`
+7.  Open shell 6 and run 
+```
+2 &&\
+p2 ~/sync_gsutil_angle_bucket_____1_hr.py
+```
+8.  Open shell 7 and run 
+```
+2 &&\
+p2 x/p/vr_mall____fresh___Dec_12_2018/smplx/cut_up_vid_____interaction/sync_gsutil_openpose_4_cropping_bucket_____1_hr.py
+```
 
 ###### Segment  (segments each piece of clothing independently):
-9.  Open shell 8 and run `2 && c /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/ && p2 w8_4_img_upload_____then_check_resolution__.py`
-  (1st decrease resolution b/c CIHP-PGN won't run on a Tesla K80 GPU at smartphone resolution)
-10.  Open shell 9 and run `2 && c /home/nathanbendich/CIHP_PGN && p2 w8_4_img_upload_____then_run_PGN__.py`
+9.  Open shell 8 and run 
+```
+2 &&\
+c x/p/vr_mall____fresh___Dec_12_2018/smplx/CIHP_PGN_____interaction/ &&\
+p2 w8_4_img_upload_____then_check_resolution__.py
+```
+We decreased resolution before running CIHP-PGN b/c a Tesla K80 GPU is too shit for high-res NN calculations
+
+10.  Open shell 9 and run 
+```
+2 &&\
+c CIHP_PGN &&\
+p2 w8_4_img_upload_____then_run_PGN__.py
+```
 ##### 2-D Pose estimation (OpenPose) (in parallel with the clothing segmentation, not dependent on it)
-##### TODO: write code to copy all the images to the OpenPose docker container and have openpose run only when the last image is "`docker cp`"ed
-11.  Go back to shell 1 and `c /openpose && python3 w8_4_img_upload_____then_run_OPose__known_fname.py`
-(/root/x/p/vr_mall____fresh___Dec_12_2018/smplx/OpenPose_____interaction/w8_4_img_upload_____then_run_OPose__known_fname.py)
-12. Open shell 10 and run `2 && c /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/MGN_____interaction/ && p2 prep_MGN_inputs___OpenPose_and___PGN_seg.py`.
-13. Open shell 11 and run `2 && p2 /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/MGN_____interaction/sync_gsutil_json_bucket_____1_hr.py`
+11.  Open shell 13 and 
+```
+sudo docker attach 5b1c347bf448
+```
+then, once that has loaded
+```
+3 &&\
+c /openpose &&\
+python3 w8_4_img_upload_____then_run_OPose__known_fname.py      
+# full script path is 
+#   /root/x/p/vr_mall____fresh___Dec_12_2018/smplx/OpenPose_____interaction/w8_4_img_upload_____then_run_OPose__known_fname.py 
+```
 
-I think we'll have to write in a bit of code to make "prep_MGN...py" wait for sync_gsutil_openpose_json.py. 
-
-14. Open shell 12 and run `conda activate mgn_py37 && c /home/nathanbendich/MultiGarmentNetwork/transl8d_py3/ && p3 make_SMPL_mesh.py`
+12. Open shell 10 and run 
+```
+2 &&\
+c x/p/vr_mall____fresh___Dec_12_2018/smplx/MGN_____interaction/ &&\
+p2 prep_MGN_inputs___OpenPose_and___PGN_seg.py
+```
+13. Open shell 11 and run 
+```
+2 &&\
+p2 x/p/vr_mall____fresh___Dec_12_2018/smplx/MGN_____interaction/sync_gsutil_json_bucket_____1_hr.py
+```
+14. Open shell 12 and run 
+```
+3 &&\
+c MultiGarmentNetwork/transl8d_py3/ &&\
+p3 make_SMPL_mesh.py
+```
 15. [.../di's_part/...]   (TODO: modify.  NOTE: this should be taken care of by the Hilaga et al. Reeb_graph code / whatever Di finds works well)
 16. ~/[...]/[...]/render_png.py (TODO)
-17. TURN OFF THE VM: `gcloud compute instances stop mgn-3`.  Otherwise, Nathan will be billed.
-18.
+17. TURN OFF THE VM: 
+```
+gcloud compute instances stop mgn-3
+```
+Otherwise, Nathan will be billed.
+18.   Shopping
 19.
 20.
 
 
 ## File locs:
 
-If I've listed a directory, please empty it completely.  Otherwise, only delete the file I listed: please delete none of the others in that directory.  
+If I've listed a directory, please empty it completely with `~/clean.sh`.  Otherwise, only delete the file I listed: please delete none of the others in that directory.
 
 VM "mgn-3" :
 1.  /home/nathanbendich/CIHP_PGN/datasets/CIHP/last_custs_angle.txt
@@ -78,6 +146,7 @@ VM "mgn-3" :
 17.
 18.
 
+You can `ls` all these at once by doing `~/ls_all.sh`
 
 OpenPose Docker container:
 1.  /root/orientation_imgs/
@@ -163,62 +232,6 @@ The above copyright notice and this permission notice shall be included in all c
 
 Chaitanya Patel: code for interpenetration removal, Thiemo Alldieck: code for texture/segmentation
 stitching and Verica Lazova: code for data anonymization.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

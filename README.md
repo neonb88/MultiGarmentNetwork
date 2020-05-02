@@ -10,8 +10,10 @@ Link to paper: https://arxiv.org/abs/1908.06903
 ###### Start 
 0.  start the instance (`gcloud compute instances start mgn-3` or in the GCloud Compute UI)
 #### NOTE: in each step after this point, when I say "do xyz in shell n," I mean "Open a new cloud shell in a new tab from the GCloud menu and then do xyz."  (and by "open a new cloud shell," I mean "copy and paste a url similar to `https://ssh.cloud.google.com/projects/helpful-valve-195602/zones/us-east1-c/instances/mgn-3?authuser=0&hl=en_US&projectNumber=962799681872` into a new browser tab")
-###### Start Docker container in shell 1 (AKA OpenPose shell)
-1. `s`
+###### Start Docker containers in shell 1
+1. `./clean.sh &&\
+s &&\
+sudo docker start 5b1c347bf448` 
 
 ###### Upload customer video:
 2.  Open shell 2 and `cd /home/nathanbendich/x/p/vr_mall____fresh___Dec_12_2018/smplx/UIUX_FrontEnd_nodejs_____interaction/ && ./launch.sh`

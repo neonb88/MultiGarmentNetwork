@@ -415,21 +415,21 @@ class PoseShapeOffsetModel(BaseModel):
         #Js = [  jl(self.smpl_J([p, betas, t]))    for jl, p, t in zip(self.J_layers, poses, trans)  ]   # original line (pre-   Mon Feb 10 20:19:03 EST 2020)
         vertices = tf.concat([tf.expand_dims(smpl, axis=-1) for i, smpl in enumerate(smpls)], axis=-1)
 
-            ##
-            out_dict['vertices'] = vertices
-            out_dict['vertices_tposed'] = vertices_tposed
-            out_dict['vertices_naked'] = vertices_naked
+        ##
+        out_dict['vertices'] = vertices
+        out_dict['vertices_tposed'] = vertices_tposed
+        out_dict['vertices_naked'] = vertices_naked
 
-            ##
-            out_dict['vertices'] = vertices
-            out_dict['vertices_tposed'] = vertices_tposed
-            out_dict['vertices_naked'] = vertices_naked
-            out_dict['offsets_h'] = offsets_
-            for i in range(NUM):
-                out_dict['J_{}'.format(i)] = Js[i]
+        ##
+        out_dict['vertices'] = vertices
+        out_dict['vertices_tposed'] = vertices_tposed
+        out_dict['vertices_naked'] = vertices_naked
+        out_dict['offsets_h'] = offsets_
+        for i in range(NUM):
+            out_dict['J_{}'.format(i)] = Js[i]
 
-            vert_cols = tf.reshape(tf.gather(self.colormap, tf.reshape(vertexlabel, (-1,))), (-1, config.NVERTS, 3))
-            renderered_garms_all = []
+        vert_cols = tf.reshape(tf.gather(self.colormap, tf.reshape(vertexlabel, (-1,))), (-1, config.NVERTS, 3))
+        renderered_garms_all = []
 
         for view in range(NUM):
             renderered_garms_all.append(render_colored_batch(vertices[..., view], self.faces, vert_cols,  # [bat],

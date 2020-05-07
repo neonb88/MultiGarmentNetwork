@@ -233,13 +233,17 @@ if __name__ == "__main__":
     #dat = pkl.load(open('/home/nathanbendich/MultiGarmentNetwork/assets/test_data_nxb_modified__2020_02_19____05:00_AM__.pkl', 'rb'), encoding='latin1')
 
     pkl_path='assets/test_data.pkl'
+    # Wait for reshape_test_data.pkl.py to finish   resizing the CIHP_PGN segmentation 'images' to 720x720:
     i=0
-    # wait for test_data.pkl
-    while not glob.glob(pkl_path):
+    flag_fname='/home/nathanbendich/MultiGarmentNetwork/assets/MGN_reshaping_done.txt'
+    print('waiting for file at {}'.format(flag_fname)
+    while not glob.glob(flag_fname):
       sleep(1)
       if i%60 ==0:
-        print("{} minutes have passed since we started waiting for the file at {}.".format(i/60, pkl_path) )
+        print("{} minutes since we started waiting.".format(i/60) )
       i+=1
+    print("reshape_test_data.pkl.py has finished     resizing the images to 720x720")
+    os.remove(flag_fname)
 
     dat = pkl.load(open(pkl_path, 'rb'), encoding='latin1')
     # Remove "standard path" pkl file:

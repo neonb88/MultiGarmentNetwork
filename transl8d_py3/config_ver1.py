@@ -1,5 +1,7 @@
 #NUM, IMG_SIZE, FACE = 8, 720, False
-NUM, IMG_SIZE, FACE = 8, 240, False           # nxb, `Sun Feb 23 07:05:24 EST 2020
+#NUM, IMG_SIZE, FACE = 8, 240, False           # nxb, `Sun Feb 23 07:05:24 EST 2020
+#NUM, IMG_SIZE, FACE = 8, 481, False           # nxb, `Sun May 5 21:56:24 EST 2020
+NUM, IMG_SIZE, FACE = 8, 720, False           # nxb, `Sun May 5 23:52:24 EST 2020
 
 config = lambda: None
 config.expName = None

@@ -1,5 +1,8 @@
 # NOTE: this was meant for python2
 import sys
+import glob
+from time import sleep
+
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
@@ -75,12 +78,31 @@ def resize(ims, IMG_SIZE=IMG_SIZE):
 
 
 
+def tell_next_proc_CIHP_is_reshaped(flag_fname='/home/nathanbendich/MultiGarmentNetwork/assets/MGN_reshaping_done.txt'):
+  open(flag_fname, 'w').write('')
+  return flag_fname
 
+def wait_4_pkl_file(pkl_path='assets/test_data.pkl'):
+  i=0
+  # Wait for  CIHP_PGN to finish segmenting
+  #       and OpenPose to finish pose-detection
+  #     (to make test_data.pkl) :
+  while not glob.glob(pkl_path):
+    sleep(1)
+    if i%60 ==0:
+      print("{} minutes have passed since we started waiting for the file at {}.".format(i/60, pkl_path) )
+    i+=1
 
 
 def main():
   fname='/home/nathanbendich/MultiGarmentNetwork/assets/test_data.pkl'
-  test_data = pkl.load(    open(fname, 'rb')    ) # python2  doesn't require encoding='latin1'
+  wait_4_pkl_file( pkl_path=fname)
+  print(' file  {} arrived!'.format(fname))
+  if sys.version_info[0]==2:
+    # python2  doesn't require encoding='latin1'
+    test_data = pkl.load(    open(fname, 'rb')    )
+  elif sys.version_info[0]==3:
+    test_data = pkl.load(    open(fname, 'rb')    , encoding='latin1')
   rendered =()
 
   for i in range(NUM):
@@ -97,7 +119,12 @@ def main():
 
   test_data['rendered']=np.concatenate( rendered, axis=4)
   out_fname=fname # overwrite old file "test_data.pkl".  May 6, 2020.      #'assets/test_data.pkl_test'
-  pkl.dump(  test_data ,   open(out_fname, 'wb') )
+  pkl.dump(  test_data ,   open(out_fname, 'wb') ) # TODO:  make sure this is the right protocol (I think it wawas 2?)
+  tell_next_proc_CIHP_is_reshaped('/home/nathanbendich/MultiGarmentNetwork/assets/MGN_reshaping_done.txt')
+  print('\n'*3)
+  print('done.')
+  print('='*99)
+  print('\n'*3)
   
 
 

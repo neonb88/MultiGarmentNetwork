@@ -110,16 +110,22 @@ p2 x/p/vr_mall____fresh___Dec_12_2018/smplx/MGN_____interaction/sync_gsutil_json
 c MultiGarmentNetwork/transl8d_py3/ &&\
 p3 make_SMPL_mesh.py
 ```
-15. [.../di's_part/...]   (TODO: modify.  NOTE: this should be taken care of by the Hilaga et al. Reeb_graph code / whatever Di finds works well)
-16. ~/[...]/[...]/render_png.py (TODO)
-17. TURN OFF THE VM: 
+15. Open shell 14 and run
+```
+2 &&\
+c MultiGarmentNetwork/transl8d_py3/ &&\
+p2 reshape_test_data.pkl.py
+```
+16. [.../di's_part/...]   (TODO: modify.  NOTE: this should be taken care of by the Hilaga et al. Reeb_graph code / whatever Di finds works well)
+17. ~/[...]/[...]/render_png.py (TODO)
+18. TURN OFF THE VM: 
 ```
 gcloud compute instances stop mgn-3
 ```
 Otherwise, Nathan will be billed.
-18.   Shopping
-19.
+19.   Shopping
 20.
+21.
 
 
 ## File locs:

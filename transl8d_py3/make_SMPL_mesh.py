@@ -6,6 +6,12 @@ If you use this code please cite:
 
 Code author: Bharat
 '''
+print('='*99)
+print('Process started. ')
+print('Please wait for pkl file. ')
+print('='*99)
+print('\n'*9)
+print('='*99)
 
 import tensorflow as tf
 import numpy as np
@@ -14,6 +20,8 @@ import datetime
 import shutil
 import os
 import glob
+
+from time import sleep
 
 #from cx import backup, clear_dir, 
 
@@ -181,14 +189,13 @@ def fine_tune(m, inp, out, display = False):
             if 'J_2d' in k:
                 J_2d += abs(lo[k])
                 continue
-            stri = stri + k + ' :{}, '.format(lo[k])
-        stri = stri + 'J_2d' + ' :{}'.format(J_2d/NUM)
+            stri = stri + k + ' :{}, '.format(lo[k]) 
+            stri = stri + 'J_2d' + ' :{}'.format(J_2d/NUM)
         print(('Ep: {}, {}'.format(ep, stri)))
 
     return m
 
 if __name__ == "__main__":
-    # TODO:   remove test_data.pkl at the end
     import os
     from os.path import exists, join, split
     from psbody.mesh import Mesh, MeshViewer, MeshViewers
@@ -227,7 +234,7 @@ if __name__ == "__main__":
 
     pkl_path='assets/test_data.pkl'
     i=0
-    # poll for test_data.pkl
+    # wait for test_data.pkl
     while not glob.glob(pkl_path):
       sleep(1)
       if i%60 ==0:
@@ -248,10 +255,9 @@ if __name__ == "__main__":
     # TODO:  repose / color before saving
     # TODO:  test
 
-    # TODO: back up cust.obj
     obj_path='./assets/cust.obj'
     pred['body'].write_obj(obj_path) # NOTE: overwrites old cust.obj
-    # backup w/ timestamp
+    # back up cust.obj w/ timestamp
     dated_obj_dir='/home/nathanbendich/MultiGarmentNetwork/assets/MGN_obj{}/'.format(timestamp)
     os.makedirs(dated_obj_dir)
     shutil.copy2(obj_path, dated_obj_dir + 'cust.obj')

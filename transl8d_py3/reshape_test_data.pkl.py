@@ -4,7 +4,6 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 
-# TODO: mv to ~/MultiGarmentNetwork/
 from config_ver1 import config, NUM, IMG_SIZE
 
 if sys.version_info[0]==2:
@@ -80,8 +79,7 @@ def resize(ims, IMG_SIZE=IMG_SIZE):
 
 
 def main():
-  #fname='assets/test_data.pkl'
-  fname='/home/n/test_data.pkl'# TODO: change
+  fname='/home/nathanbendich/MultiGarmentNetwork/assets/test_data.pkl'
   test_data = pkl.load(    open(fname, 'rb')    ) # python2  doesn't require encoding='latin1'
   rendered =()
 
@@ -98,7 +96,7 @@ def main():
 
 
   test_data['rendered']=np.concatenate( rendered, axis=4)
-  out_fname='assets/test_data.pkl_test' # TODO: change
+  out_fname=fname # overwrite old file "test_data.pkl".  May 6, 2020.      #'assets/test_data.pkl_test'
   pkl.dump(  test_data ,   open(out_fname, 'wb') )
   
 

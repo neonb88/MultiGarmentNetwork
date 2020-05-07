@@ -1,3 +1,7 @@
 *.pyc
 *.pkl
 pretrained/*
+*.png
+*.obj
+assets/Multi-Garmentdataset.zip
+assets/*/

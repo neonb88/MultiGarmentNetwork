@@ -226,6 +226,7 @@ if __name__ == "__main__":
 
     ## Get results before optimization
     pred = get_results(m, dat)
+    """
     print(pred['garment_meshes'][0].v.shape)
     print(pred['body'].v.shape)
     mv = MeshViewers((1,2), keepalive=True)
@@ -235,6 +236,7 @@ if __name__ == "__main__":
     print('\n'*9)
     mv[0][0].set_static_meshes(pred['garment_meshes'] + [pred['body']])
     mv[0][1].set_static_meshes([pred['body']])
+    """
 
   #============================================================================================================
     #   Temporary mesh-saving:   nxb, Mon Feb 24 20:08:17 EST 2020
@@ -247,6 +249,7 @@ if __name__ == "__main__":
       # but python3 allows up to protocol==4.  -nxb, Mon Feb 24 20:16:00 EST 2020
     """
 
+    '''
     if 1 < len(sys.argv) and 'clothes'==sys.argv[1].lower(): # this conditional-checking style is recommended by Spolsky and others (1==x with the var name on the right instead of left b/c left gets mistaken for assignment)
       # TODO :   check/test the shit out of this.  I didn't even run it to 
       # TODO :   timestamped subdirectory within assets
@@ -258,15 +261,16 @@ if __name__ == "__main__":
         pkl.dump(clothes_dict, f, protocol=pkl.HIGHEST_PROTOCOL)
       """
     else:
-      # TODO:  repose / color before saving
-      # TODO:  test
+    '''
+    # TODO:  repose / color before saving
+    # TODO:  test
 
-      obj_path='./assets/cust.obj'
-      pred['body'].write_obj(obj_path) # NOTE: overwrites old cust.obj
-      # backup w/ timestamp
-      dated_obj_dir='/home/nathanbendich/MultiGarmentNetwork/assets/MGN_obj{}/'.format(timestamp)
-      os.makedirs(dated_obj_dir)
-      shutil.copy2(obj_path, dated_obj_dir + 'cust.obj')
+    obj_path='./assets/cust.obj'
+    pred['body'].write_obj(obj_path) # NOTE: overwrites old cust.obj
+    # backup w/ timestamp
+    dated_obj_dir='/home/nathanbendich/MultiGarmentNetwork/assets/MGN_obj{}/'.format(timestamp)
+    os.makedirs(dated_obj_dir)
+    shutil.copy2(obj_path, dated_obj_dir + 'cust.obj')
 
     """
     clothes_dict = {'garment_meshes' : pred['garment_meshes']}
@@ -276,6 +280,7 @@ if __name__ == "__main__":
   #============================================================================================================
 
     ## Optimize the network
+    '''
     m = fine_tune(m, dat, dat, display=False)
     pred = get_results(m, dat, )
 
@@ -292,5 +297,6 @@ if __name__ == "__main__":
     mv1 = MeshViewers((1,2), keepalive=True)
     mv1[0][0].set_static_meshes(pred['garment_meshes'])
     mv1[0][1].set_static_meshes([pred['body']])
+    '''
 
     print('Done')

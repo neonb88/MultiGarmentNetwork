@@ -236,7 +236,7 @@ if __name__ == "__main__":
     # Wait for reshape_test_data.pkl.py to finish   resizing the CIHP_PGN segmentation 'images' to 720x720:
     i=0
     flag_fname='/home/nathanbendich/MultiGarmentNetwork/assets/MGN_reshaping_done.txt'
-    print('waiting for file at {}'.format(flag_fname)
+    print('waiting for file at {}'.format(flag_fname) )
     while not glob.glob(flag_fname):
       sleep(1)
       if i%60 ==0:

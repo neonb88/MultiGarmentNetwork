@@ -88,6 +88,10 @@ def get_results(m, inp, with_pose = False):
     vertex_label = inp['vertexlabel'].astype('int64')
 
     out = m([images, vertex_label, J_2d])
+    #print(type(out) ) # dict
+    #print("="*99 )
+    #print(out.keys():  ) # dict_keys(['betas', 'pose_0', 'trans_0', 'pose_1', 'trans_1', 'pose_2', 'trans_2', 'pose_3', 'trans_3', 'pose_4', 'trans_4', 'pose_5', 'trans_5', 'pose_6', 'trans_6', 'pose_7', 'trans_7', 'pca_verts', 'vertices', 'vertices_tposed', 'vertices_naked', 'offsets_h', 'J_0', 'J_1', 'J_2', 'J_3', 'J_4', 'J_5', 'J_6', 'J_7', 'rendered', 'laplacian'])
+    #print(out['pose_1'].shape ) # (2, 24, 3, 3)   2 ppl, 24 joints, 3 DoF per joint?    and then... i don't remember.  Something about the Rodriguez "angle format" ?
 
     with open('assets/hresMapping.pkl', 'rb') as f:
         if sys.version_info[0]  ==  3:
@@ -111,7 +115,7 @@ def get_results(m, inp, with_pose = False):
             continue
         gar_meshes.append(split_garments(out['pca_verts'][0][gar-1], pred_mesh, vertex_label[0] == gar, gar -1))
 
-    return {'garment_meshes': gar_meshes, 'body': pred_naked, 'pca_mesh': pred_pca}
+    return {'garment_meshes': gar_meshes, 'body': pred_naked, 'pca_mesh': pred_pca, 'betas': out['betas']}
 
 def load_model(model_dir):
     m = PoseShapeOffsetModel(config, latent_code_garms_sz=int(config.latent_code_garms_sz / 2))
@@ -242,7 +246,10 @@ if __name__ == "__main__":
       if i%60 ==0:
         print("{} minutes since we started waiting.".format(i/60) )
       i+=1
+    print("="*99)
     print("reshape_test_data.pkl.py has finished     resizing the images to 720x720")
+    print("="*99)
+    print('\n'*2)
     os.remove(flag_fname)
 
     dat = pkl.load(open(pkl_path, 'rb'), encoding='latin1')
@@ -265,6 +272,14 @@ if __name__ == "__main__":
     dated_obj_dir='/home/nathanbendich/MultiGarmentNetwork/assets/MGN_obj{}/'.format(timestamp)
     os.makedirs(dated_obj_dir)
     shutil.copy2(obj_path, dated_obj_dir + 'cust.obj')
+    # record the betas   so we can recreate the body shape later -nxb, May 16 04:53:30 EDT 2020
+    open('assets/cust_betas.txt', 'w').write(
+      str( pred['betas'])
+    )
+    # dated backup:
+    open(dated_obj_dir+'cust_betas.txt', 'w').write(
+      str( pred['betas'])
+    )
     print('Done')
   #============================================================================================================
 

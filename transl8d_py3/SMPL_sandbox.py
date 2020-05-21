@@ -155,6 +155,10 @@ if __name__ == '__main__':
     smpl = Smpl(dp.get_hres_smpl_model_data())
 
     body = load_smpl_from_file(join(path, 'registration.pkl'))
+    print("body.pose.shape : ")
+    print(body.pose.shape)
+    print("="*99)
+    print("\n"*2)
     body.pose[:] = 0
 
     # angles are in radians:

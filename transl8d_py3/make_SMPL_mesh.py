@@ -115,7 +115,8 @@ def get_results(m, inp, with_pose = False):
             continue
         gar_meshes.append(split_garments(out['pca_verts'][0][gar-1], pred_mesh, vertex_label[0] == gar, gar -1))
 
-    return {'garment_meshes': gar_meshes, 'body': pred_naked, 'pca_mesh': pred_pca, 'betas': out['betas']}
+    return {'garment_meshes': gar_meshes, 'body': pred_naked, 'pca_mesh': pred_pca, 'model': out}
+#def get_results(m, inp, with_pose = False):
 
 def load_model(model_dir):
     m = PoseShapeOffsetModel(config, latent_code_garms_sz=int(config.latent_code_garms_sz / 2))
@@ -272,14 +273,32 @@ if __name__ == "__main__":
     dated_obj_dir='/home/nathanbendich/MultiGarmentNetwork/assets/MGN_obj{}/'.format(timestamp)
     os.makedirs(dated_obj_dir)
     shutil.copy2(obj_path, dated_obj_dir + 'cust.obj')
+
+    m=pred['model']
     # record the betas   so we can recreate the body shape later -nxb, May 16 04:53:30 EDT 2020
-    open('assets/cust_betas.txt', 'w').write(
-      str( pred['betas'])
-    )
-    # dated backup:
-    open(dated_obj_dir+'cust_betas.txt', 'w').write(
-      str( pred['betas'])
-    )
+    betas_fname='assets/cust_betas.txt'
+    open(betas_fname, 'w').write( str( m['betas']))
+    # dated backup of betas:
+    shutil.copy2( betas_fname,  dated_obj_dir+'cust_betas.txt')
+
+
+    # Thetas:
+    #   Human readable version:
+
+    '''
+    #   Record the thetas   so we can recreate the body shape later -nxb, May 16 04:53:30 EDT 2020
+    #   This version is more human-readable, but probably not the best for ease of   "python-reading" (it might be preferable for ease of coding to reformat this shit into a .npy file or some other format)   -nxb,  May 21 11:13:18 EDT 2020
+    '''
+    thetas_4_human_eyes_fname='assets/thetas_per_frame_____human_readable.txt'
+    with open(thetas_4_human_eyes_fname, 'w') as f:
+      for i in range(8):  # i is a frame number from   0-7.
+        f.write( '='*99+'\n' )
+        f.write( 'frame {}:\n'.format(i) )
+        f.write( 'pose: '+ str(m['pose_{}'.format(i) ])+'\n' )
+        f.write( 'translation: '+ str(m['trans_{}'.format(i) ])+'\n'   )
+        f.write( '='*99+'\n'*9 )
+    # dated backup of thetas:
+    shutil.copy2( thetas_4_human_eyes_fname,  dated_obj_dir+'thetas_per_frame.txt')
     print('Done')
   #============================================================================================================
 

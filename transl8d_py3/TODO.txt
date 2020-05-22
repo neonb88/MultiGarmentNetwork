@@ -1,0 +1,10 @@
+
+  We were working on "show.py" and translating the angles spit out by make_smpl_mesh.py (or some similarly named python script)  into m.pose[] values  ("thetas")      and hooking it up into "show.py"
+
+
+
+
+
+
+
+

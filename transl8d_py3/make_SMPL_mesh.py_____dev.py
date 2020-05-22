@@ -235,7 +235,8 @@ if __name__ == "__main__":
     m = load_model(model_dir)
 
     ## Load test data
-    pkl_path='/home/nathanbendich/MultiGarmentNetwork/assets/MGN_pkl__2020_05_18____09:49_AM__/test_data.pkl_____originally_from_May_7th_2020_directory_____reshaped.pkl'
+    #pkl_path='/home/nathanbendich/MultiGarmentNetwork/assets/MGN_pkl__2020_05_18____09:49_AM__/test_data.pkl_____originally_from_May_7th_2020_directory_____reshaped.pkl'
+    pkl_path='/home/nathanbendich/MultiGarmentNetwork/assets/MGN_pkl__2020_05_21____11:05_AM__/test_data.pkl_____reshaped.pkl'
     dat = pkl.load(open(pkl_path, 'rb'), encoding='latin1')
 
     ## Get results before optimization
@@ -263,6 +264,18 @@ if __name__ == "__main__":
 
     # record the thetas   so we can recreate the body shape later -nxb, May 16 04:53:30 EDT 2020
     thetas_fname='assets/thetas_per_frame.txt'
+    print("m['pose_0'].numpy().shape:" )
+    print(m['pose_0'].numpy().shape )
+    print('\n'*3)
+
+    frame0_fname='assets/thetas_frame_0.npy'
+    np.save(  open(frame0_fname, 'wb'),
+      m['pose_0']. numpy())
+    shutil.copy2( frame0_fname,  dated_obj_dir+'thetas_frame_0.npy')
+    # TODO: turn this into input to SMPL(betas, thetas)
+
+    #open('assets/thetas_frame_0.txt', 'w').write( str(   
+      #m['pose_0']. numpy()))
     with open(thetas_fname, 'w') as f:
       for i in range(8):  # i is a frame number from   0-7.
         f.write( '='*99+'\n' )

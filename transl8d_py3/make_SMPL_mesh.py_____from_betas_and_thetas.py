@@ -148,10 +148,18 @@ def dress(smpl_tgt, body_src, garment, vert_inds, garment_tex = None):
 
 #===========================================================
 def read_pose(fname):
+  # angles are in radians:
   # TODO TODO TODO:    TODO TODO TODO:
+  N_thetas        = 72
+  N_joints        = 24
   thetas_full_3x3 = np.load(fname)
-  thetas_72, _    = cv2.rodrigues(thetas_full_3x3) # vectorize this operation / reshape the numpy arrays / reshape the tensorflow tensors / convert tensorflow to numpy 
-  return thetas_72
+  thetas_full_3x3 = thetas_full_3x3[0] # there were initially 2 people's poses  in the numpy array.
+  out_pose        = np.zeros( (N_thetas))
+  for i in range(N_joints):
+    out_pose[3*i :3*(i+1)] = cv2.Rodrigues( thetas_full_3x3[i])[
+      0].reshape((3,)) # NOTE: the 2nd ret val from Rodrigues() does something else
+  # vectorize this operation / reshape the numpy arrays / reshape the tensorflow tensors / convert tensorflow to numpy 
+  return out_pose
 #===========================================================
 
 
@@ -174,11 +182,11 @@ if __name__ == '__main__':
 
     body = load_smpl_from_file(join(path, 'registration.pkl'))
     body.pose[:] = 0
+    #body.pose[5] =  0.5 # left  leg
+    #body.pose[8] = -0.5 # right leg
 
     # angles are in radians:
-    body.pose[5] =  0.5 # left  leg
-    body.pose[8] = -0.5 # right leg
-    body.pose     =read_pose('/home/nathanbendich/MultiGarmentNetwork/assets/MGN_obj_[...insert_date_here...]/thetas.txt')
+    body.pose     =read_pose('assets/thetas_frame_0.npy')
 
     # NOTE: you can reshape the body here:
     #body.betas[:] = np.random.randn(10) *0.01   # 10 shape parameters

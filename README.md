@@ -123,7 +123,7 @@ p2 reshape_test_data.pkl.py
 gcloud compute instances stop mgn-3
 ```
 Otherwise, Nathan will be billed.
-19.   Shopping
+19.   Customer buys something.
 20.
 21.
 

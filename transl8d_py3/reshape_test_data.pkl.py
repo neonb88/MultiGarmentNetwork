@@ -93,11 +93,32 @@ def wait_4_pkl_file(pkl_path='assets/test_data.pkl'):
       print("{} minutes have passed since we started waiting for the file at {}.".format(i/60, pkl_path) )
     i+=1
 
+#==========================================================================================================
+def wait_4_pkl_file_2_fully_write(pkl_path='/home/nathanbendich/MultiGarmentNetwork/assets/test_data.pkl', n_secs=30):
+  # NOTE: CIHP_PGN takes much much longer than this, so 30 seconds isn't THAT big a deal.
+  print(' waiting for file  {} to be fully written!'.format(pkl_path))
+  time.sleep(n_secs) 
+#==========================================================================================================
 
+
+#==========================================================================================================
 def main():
   fname='/home/nathanbendich/MultiGarmentNetwork/assets/test_data.pkl'
+
+  # NOTE: CIHP_PGN takes much much longer than this, so 30 seconds isn't THAT big a deal.
+  #   nonetheless, we want to refactor everything so we don't have to wait those 30 seconds.
+  #   NOTE: I got this "30 seconds" from multiple runs of resaving the original size images in  "test_data.pkl" .  -nxb, Sat May 30 17:02:35 EDT 2020
+
+  #==============================================================================================
+  # NOTE: don't change this!    Don't break things!
+  # NOTE: don't change this!    Don't break things!
+  EMPIRICALLY_DERIVED_PKL_SAVE_TIME=30  # NOTE: don't change this!    Don't break things!
+  # NOTE: don't change this!    Don't break things!
+  # NOTE: don't change this!    Don't break things!
+  #==============================================================================================
   wait_4_pkl_file( pkl_path=fname)
   print(' file  {} arrived!'.format(fname))
+  wait_4_pkl_file_2_fully_write(pkl_path=fname, nsecs=EMPIRICALLY_DERIVED_PKL_SAVE_TIME)
   if sys.version_info[0]==2:
     # python2  doesn't require encoding='latin1'
     test_data = pkl.load(    open(fname, 'rb')    )
@@ -107,6 +128,7 @@ def main():
 
   for i in range(NUM):
     # Because BLB built this to run on two sets of images at once:
+    print("resizing image {}".format(i))
     img = resize(
       test_data['image_{}'.format(i)],
       IMG_SIZE=IMG_SIZE)
@@ -125,9 +147,19 @@ def main():
   print('done.')
   print('='*99)
   print('\n'*3)
+#==========================================================================================================
   
 
 
 
 if __name__=="__main__":
   main()
+
+
+
+
+
+
+
+
+

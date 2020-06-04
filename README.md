@@ -15,7 +15,7 @@ Link to paper: https://arxiv.org/abs/1908.06903
 ```
 ./clean.sh &&\
 s &&\
-sudo docker start 5b1c347bf448
+s2                # (sudo docker start 5b1c347bf448)
 ``` 
 
 ###### Upload customer video:
@@ -88,7 +88,7 @@ then, once that has loaded
 ```
 3 &&\
 c /openpose &&\
-python3 w8_4_img_upload_____then_run_OPose__known_fname.py      
+p3 w8_4_img_upload_____then_run_OPose__known_fname.py      
 # full script path is 
 #   /root/x/p/vr_mall____fresh___Dec_12_2018/smplx/OpenPose_____interaction/w8_4_img_upload_____then_run_OPose__known_fname.py 
 ```
@@ -123,7 +123,7 @@ p2 reshape_test_data.pkl.py
 gcloud compute instances stop mgn-3
 ```
 Otherwise, Nathan will be billed.
-19.   Shopping
+19.   Customer buys something.
 20.
 21.
 
